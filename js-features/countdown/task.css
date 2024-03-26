@@ -1,0 +1,12 @@
+/* Стили для таймера */
+
+#status {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  #timer {
+    color: red;
+  }
+  

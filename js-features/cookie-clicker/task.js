@@ -1,38 +1,52 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const cookieImg = document.getElementById('cookie');
-    const clickCounter = document.getElementById('clicker__counter');
-    let clickCount = 0;
-    let cookieSize = 200; // начальный размер печеньки
-    let isIncreased = true; // флаг для определения увеличения/уменьшения размера печеньки
+const cookie = document.getElementById('cookie');
+let clickCounter = 0;
 
-    let lastClickTime = Date.now();
-    let clickSpeed = 0;
-
-    function updateCookieSize() {
-        if (isIncreased) {
-            cookieSize += 20;
-        } else {
-            cookieSize -= 20;
-        }
-        cookieImg.style.width = `${cookieSize}px`;
-        cookieImg.style.height = `${cookieSize}px`;
-        isIncreased = !isIncreased; // переключаем флаг
-    }
-
-    function updateClickSpeed() {
-        const now = Date.now();
-        const timeDiff = now - lastClickTime;
-        if (timeDiff > 0) {
-            clickSpeed = 1000 / timeDiff; // расчёт скорости кликов в кликах в секунду
-        }
-        lastClickTime = now;
-    }
-
-    cookieImg.addEventListener('click', function () {
-        clickCount++;
-        clickCounter.textContent = clickCount;
-        updateClickSpeed();
-        document.getElementById('clicker__speed').textContent = clickSpeed.toFixed(2); // обновляем скорость кликов
-        updateCookieSize();
-    });
+cookie.addEventListener('click', () => {
+  clickCounter++;
+  updateClickCounter();
+  animateCookie();
+  calculateClicksPerSecond(); 
 });
+
+function updateClickCounter() {
+    const counterElement = document.getElementById('clicker__counter');
+    counterElement.textContent = clickCounter;
+  }
+
+  function animateCookie() {
+    const originalWidth = 200;
+    const originalHeight = 200;
+    const maxWidth = 250;
+    const maxHeight = 250;
+  
+    const cookie = document.getElementById('cookie');
+  
+
+    cookie.style.width = `${maxWidth}px`;
+    cookie.style.height = `${maxHeight}px`;
+  
+    setTimeout(() => {
+      cookie.style.width = `${originalWidth}px`;
+      cookie.style.height = `${originalHeight}px`;
+    }, 100);
+  }
+
+  let startTime;
+  let endTime;
+  let clicks = 0;
+  
+  function calculateClicksPerSecond() {
+    clicks++;
+    endTime = new Date();
+  
+    if (startTime) {
+      const timeDifference = (endTime - startTime) / 1000;
+      const clicksPerSecond = clicks / timeDifference;
+      document.getElementById('cps').textContent = clicksPerSecond.toFixed(2);
+  
+      startTime = null;
+      clicks = 0;
+    } else {
+      startTime = new Date();
+    }
+  }

@@ -4,22 +4,16 @@ const lostCounterElement = document.getElementById('lost');
 let deadCount = 0;
 let lostCount = 0;
 
-function showMole() {
-  const holeIndex = Math.floor(Math.random() * holes.length);
-  const hole = getHole(holeIndex);
-
-  holes.forEach((hole) => {
-    hole.classList.remove('hole_has-mole');
-  });
-
-  hole.classList.add('hole_has-mole');
+function getHole(index) {
+  return document.getElementById(`hole${index + 1}`);
 }
 
-function checkClick(hole) {
+function checkClick(event) {
+  const hole = event.currentTarget;
+
   if (hole.classList.contains('hole_has-mole')) {
     deadCount++;
     deadCounterElement.textContent = deadCount;
-    showMole();
   } else {
     lostCount++;
     lostCounterElement.textContent = lostCount;
@@ -39,11 +33,8 @@ function resetGame() {
   lostCount = 0;
   deadCounterElement.textContent = deadCount;
   lostCounterElement.textContent = lostCount;
-  showMole();
 }
 
-holes.forEach((hole) => {
-  hole.addEventListener('click', () => checkClick(hole));
+holes.forEach(hole => {
+  hole.addEventListener('click', checkClick);
 });
-
-showMole();

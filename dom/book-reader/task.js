@@ -11,34 +11,33 @@ document.addEventListener("DOMContentLoaded", () => {
       activeControl.classList.add(activeControl.classList.contains("font-size") ? "font-size_active" : "color_active");
     }
   
-    function setBookClass(className) {
-      book.classList.remove("book_fs-small", "book_fs-big", "book_color-gray", "book_color-whitesmoke", "book_color-black", "book_bg-gray", "book_bg-black", "book_bg-white");
-      if (className) {
-        book.classList.add(className);
-      }
+    function setBookClass(newClass, classPrefix) {
+      const currentClasses = book.className.split(" ").filter(cls => !cls.startsWith(classPrefix));
+      currentClasses.push(newClass);
+      book.className = currentClasses.join(" ");
     }
-  
+ 
     fontSizeControls.forEach(control => {
       control.addEventListener("click", (event) => {
         event.preventDefault();
         setActiveClass(fontSizeControls, control);
         const size = control.dataset.size;
         if (size === "small") {
-          setBookClass("book_fs-small");
+          setBookClass("book_fs-small", "book_fs-");
         } else if (size === "big") {
-          setBookClass("book_fs-big");
+          setBookClass("book_fs-big", "book_fs-");
         } else {
-          setBookClass(null);
+          setBookClass("", "book_fs-");
         }
       });
     });
-  
+ 
     colorControls.forEach(control => {
       control.addEventListener("click", (event) => {
         event.preventDefault();
         setActiveClass(colorControls, control);
         const color = control.dataset.textColor;
-        setBookClass(`book_color-${color}`);
+        setBookClass(`book_color-${color}`, "book_color-");
       });
     });
   
@@ -47,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
         event.preventDefault();
         setActiveClass(backgroundControls, control);
         const bgColor = control.dataset.bgColor;
-        setBookClass(`book_bg-${bgColor}`);
+        setBookClass(`book_bg-${bgColor}`, "book_bg-");
       });
     });
   });

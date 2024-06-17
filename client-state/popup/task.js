@@ -9,14 +9,10 @@ function setCookie(name, value, days) {
 }
 
 function getCookie(name) {
-    let nameEQ = name + "=";
-    let ca = document.cookie.split(';');
-    for (let i = 0; i < ca.length; i++) {
-        let c = ca[i];
-        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
-    }
-    return null;
+    const nameEQ = name + "=";
+    const cookies = document.cookie.split(';').map(c => c.trim());
+    const cookie = cookies.find(c => c.startsWith(nameEQ));
+    return cookie ? cookie.substring(nameEQ.length) : null;
 }
 
 const modal = document.getElementById('subscribe-modal');

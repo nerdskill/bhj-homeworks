@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     const taskInput = document.getElementById('task__input');
     const taskList = document.getElementById('tasks__list');
+    const taskForm = document.getElementById('tasks__form');
+    const taskAddButton = document.getElementById('tasks__add');
 
     const loadTasks = () => {
         const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
@@ -34,8 +36,18 @@ document.addEventListener('DOMContentLoaded', () => {
         taskList.appendChild(taskDiv);
     };
 
-    taskInput.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter' && taskInput.value.trim() !== '') {
+    taskForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        if (taskInput.value.trim() !== '') {
+            addTaskToDOM(taskInput.value.trim());
+            taskInput.value = '';
+            saveTasks();
+        }
+    });
+
+    taskAddButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        if (taskInput.value.trim() !== '') {
             addTaskToDOM(taskInput.value.trim());
             taskInput.value = '';
             saveTasks();

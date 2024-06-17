@@ -1,58 +1,62 @@
 document.addEventListener('DOMContentLoaded', () => {
     const tooltips = document.querySelectorAll('.has-tooltip');
 
-    tooltips.forEach(tooltip => {
-        tooltip.addEventListener('click', (event) => {
+    tooltips.forEach((tooltip) => {
+        tooltip.addEventListener('click', function(event) {
             event.preventDefault();
 
-            const existingTooltip = document.querySelector('.tooltip_active');
+            const existingTooltip = document.querySelector('.tooltip');
             if (existingTooltip) {
-                existingTooltip.remove();
+                if (existingTooltip.previousElementSibling === this) {
+                    existingTooltip.remove();
+                    return;
+                } else {
+                    existingTooltip.remove();
+                }
             }
 
-            const tooltipText = tooltip.getAttribute('title');
+            const tooltipText = this.getAttribute('title');
             const tooltipElement = document.createElement('div');
             tooltipElement.className = 'tooltip tooltip_active';
             tooltipElement.innerText = tooltipText;
+
+            const position = this.getAttribute('data-position') || 'bottom';
+            const tooltipRect = this.getBoundingClientRect();
             document.body.appendChild(tooltipElement);
 
-            const position = tooltip.getAttribute('data-position') || 'bottom';
-            const tooltipRect = tooltipElement.getBoundingClientRect();
-            const targetRect = tooltip.getBoundingClientRect();
+            let top = 0;
+            let left = 0;
 
             switch (position) {
                 case 'top':
-                    tooltipElement.style.top = (targetRect.top - tooltipRect.height) + 'px';
-                    tooltipElement.style.left = targetRect.left + 'px';
-                    break;
-                case 'right':
-                    tooltipElement.style.top = targetRect.top + 'px';
-                    tooltipElement.style.left = (targetRect.right) + 'px';
+                    top = tooltipRect.top - tooltipElement.offsetHeight - 5;
+                    left = tooltipRect.left + (tooltipRect.width / 2) - (tooltipElement.offsetWidth / 2);
                     break;
                 case 'bottom':
-                    tooltipElement.style.top = (targetRect.bottom) + 'px';
-                    tooltipElement.style.left = targetRect.left + 'px';
+                    top = tooltipRect.bottom + 5;
+                    left = tooltipRect.left + (tooltipRect.width / 2) - (tooltipElement.offsetWidth / 2);
                     break;
                 case 'left':
-                    tooltipElement.style.top = targetRect.top + 'px';
-                    tooltipElement.style.left = (targetRect.left - tooltipRect.width) + 'px';
+                    top = tooltipRect.top + (tooltipRect.height / 2) - (tooltipElement.offsetHeight / 2);
+                    left = tooltipRect.left - tooltipElement.offsetWidth - 5;
                     break;
-                default:
-                    tooltipElement.style.top = (targetRect.bottom) + 'px';
-                    tooltipElement.style.left = targetRect.left + 'px';
+                case 'right':
+                    top = tooltipRect.top + (tooltipRect.height / 2) - (tooltipElement.offsetHeight / 2);
+                    left = tooltipRect.right + 5;
+                    break;
             }
 
-            const scrollOffset = window.scrollY;
-            tooltipElement.style.top = (parseFloat(tooltipElement.style.top) + scrollOffset) + 'px';
+            tooltipElement.style.top = `${top}px`;
+            tooltipElement.style.left = `${left}px`;
+
+            this.parentNode.insertBefore(tooltipElement, this.nextSibling);
+
+            document.addEventListener('click', function hideTooltip(event) {
+                if (!tooltip.contains(event.target) && !tooltipElement.contains(event.target)) {
+                    tooltipElement.remove();
+                    document.removeEventListener('click', hideTooltip);
+                }
+            });
         });
-    });
-
-    document.addEventListener('click', (event) => {
-        if (!event.target.classList.contains('has-tooltip')) {
-            const existingTooltip = document.querySelector('.tooltip_active');
-            if (existingTooltip) {
-                existingTooltip.remove();
-            }
-        }
     });
 });
